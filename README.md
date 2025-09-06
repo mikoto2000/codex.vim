@@ -18,7 +18,8 @@ codex にリクエストを送る:
 
 ## Requirements:
 
-curl コマンドにパスが通っていること。
+- Linux only
+- curl コマンドにパスが通っていること
 
 ## License:
 
