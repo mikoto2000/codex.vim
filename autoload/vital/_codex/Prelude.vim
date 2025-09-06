@@ -4,7 +4,7 @@
 function! s:_SID() abort
   return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze__SID$')
 endfunction
-execute join(['function! vital#_opt#Prelude#import() abort', printf("return map({'escape_pattern': '', 'is_funcref': '', 'path2directory': '', 'wcswidth': '', 'is_string': '', 'input_helper': '', 'is_number': '', 'is_cygwin': '', 'path2project_directory': '', 'strwidthpart_reverse': '', 'input_safe': '', 'is_list': '', 'truncate_skipping': '', 'glob': '', 'truncate': '', 'is_dict': '', 'set_default': '', 'is_numeric': '', 'getchar_safe': '', 'substitute_path_separator': '', 'is_infinity': '', 'is_mac': '', 'strwidthpart': '', 'getchar': '', 'is_unix': '', 'is_windows': '', 'globpath': '', 'is_float': '', 'smart_execute_command': ''}, \"vital#_opt#function('<SNR>%s_' . v:key)\")", s:_SID()), 'endfunction'], "\n")
+execute join(['function! vital#_codex#Prelude#import() abort', printf("return map({'escape_pattern': '', 'is_funcref': '', 'path2directory': '', 'wcswidth': '', 'is_string': '', 'input_helper': '', 'is_number': '', 'is_cygwin': '', 'path2project_directory': '', 'strwidthpart_reverse': '', 'input_safe': '', 'is_list': '', 'truncate_skipping': '', 'glob': '', 'truncate': '', 'is_dict': '', 'set_default': '', 'is_numeric': '', 'getchar_safe': '', 'substitute_path_separator': '', 'is_infinity': '', 'is_mac': '', 'strwidthpart': '', 'getchar': '', 'is_unix': '', 'is_windows': '', 'globpath': '', 'is_float': '', 'smart_execute_command': ''}, \"vital#_codex#function('<SNR>%s_' . v:key)\")", s:_SID()), 'endfunction'], "\n")
 delfunction s:_SID
 " ___vital___
 let s:save_cpo = &cpo

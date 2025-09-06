@@ -4,7 +4,7 @@
 function! s:_SID() abort
   return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze__SID$')
 endfunction
-execute join(['function! vital#_opt#Web#HTTP#import() abort', printf("return map({'get_settings': '', 'request_async': '', 'encodeURIComponent': '', 'curl_inner_exit_cb': '', '_vital_depends': '', 'curl_err_cb': '', 'post': '', 'get': '', 'request': '', 'decodeURI': '', 'escape': '', 'parseHeader': '', 'curl_out_cb': '', 'encodeURI': '', 'curl_exit_cb': '', 'curl_cb_common': '', '_vital_loaded': ''}, \"vital#_opt#function('<SNR>%s_' . v:key)\")", s:_SID()), 'endfunction'], "\n")
+execute join(['function! vital#_codex#Web#HTTP#import() abort', printf("return map({'get_settings': '', 'request_async': '', 'encodeURIComponent': '', 'curl_inner_exit_cb': '', '_vital_depends': '', 'curl_err_cb': '', 'post': '', 'get': '', 'request': '', 'decodeURI': '', 'escape': '', 'parseHeader': '', 'curl_out_cb': '', 'encodeURI': '', 'curl_exit_cb': '', 'curl_cb_common': '', '_vital_loaded': ''}, \"vital#_codex#function('<SNR>%s_' . v:key)\")", s:_SID()), 'endfunction'], "\n")
 delfunction s:_SID
 " ___vital___
 let s:save_cpo = &cpo

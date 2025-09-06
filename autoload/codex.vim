@@ -12,7 +12,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 packadd vital.vim
-let s:HTTP = vital#vital#import("Web.HTTP")
+let s:HTTP = vital#codex#import("Web.HTTP")
 
 let s:ENDPOINT_URL = "https://api.openai.com/v1/responses"
 let s:HEADERS = {
