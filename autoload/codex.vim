@@ -76,12 +76,16 @@ function! codex#AppendText(text) abort
 endfunction
 
 function! codex#ExitCb(job, code, headers, body) abort
-  echomsg a:body
   let body_text = type(a:body) == v:t_list ? join(a:body, "\n") : a:body
   let body_json = json_decode(body_text)
-
-  " レスポンスからテキストを抽出
-  let text = s:ExtractText(body_json)
+  if empty(text)
+    " デバッグ情報出力
+    echomsg '[codex] no assistant text. keys=' . string(keys(body_json))
+    call codex#AppendText('[Error] レスポンスのパースに失敗しました' . "\n")
+  else
+    " レスポンスからテキストを抽出
+    call codex#AppendText(text . "\n")
+  endif
 
   " codex 用バッファに追記
   call codex#AppendText(text . "\n")
