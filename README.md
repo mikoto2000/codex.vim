@@ -4,6 +4,8 @@
 
 ## Usage:
 
+以下の関数が定義されているので、お好きなコマンドやキーマッピングを設定して使ってください。
+
 codex にリクエストを送る:
 
 ```vim
@@ -24,6 +26,16 @@ codex にリクエストを送る:
 
 ```vim
 :call codex#ResetContext()
+```
+
+### コマンド例:
+
+```vim
+" リクエストを送るコマンド
+command! -nargs=+ CodexRequest call codex#Request(<q-args>)
+command! CodexRequestFromBuffer call codex#RequestFromBuffer()
+command! CodexOpenRequestBuffer call codex#OpenRequestBuffer()
+command! CodexResetContext call codex#ResetContext()
 ```
 
 ## Requirements:

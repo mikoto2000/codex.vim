@@ -18,6 +18,7 @@ let s:HEADERS = {
       \  "Content-Type": "application/json",
       \  "Authorization": "Bearer " . $OPENAI_API_KEY
       \}
+" TODO: モデルの選択をできるようにしたい
 let s:MODEL = "gpt-5"
 
 let s:prev_response_id = ''
@@ -65,7 +66,6 @@ function! codex#AppendText(text) abort
 
   if !bufloaded(buf) | call bufload(buf) | endif
 
-
   " 末尾に追記（空バッファなら1行目を置換）
   let lc = getbufinfo(buf)[0].linecount
   if lc == 1 && getbufline(buf, 1)[0] ==# ''
@@ -78,6 +78,7 @@ endfunction
 function! codex#ExitCb(job, code, headers, body) abort
   let body_text = type(a:body) == v:t_list ? join(a:body, "\n") : a:body
   let body_json = json_decode(body_text)
+  let text = s:ExtractText(body_json)
   if empty(text)
     " デバッグ情報出力
     echomsg '[codex] no assistant text. keys=' . string(keys(body_json))
@@ -86,9 +87,6 @@ function! codex#ExitCb(job, code, headers, body) abort
     " レスポンスからテキストを抽出
     call codex#AppendText(text . "\n")
   endif
-
-  " codex 用バッファに追記
-  call codex#AppendText(text . "\n")
 
   " stateful 用に id を保持（あれば更新）
   if has_key(body_json, 'id') && type(body_json.id) == v:t_string && !empty(body_json.id)
