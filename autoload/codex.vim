@@ -35,6 +35,7 @@ function! codex#OpenCodexBuffer() abort
     setlocal noswapfile
     setlocal buftype=nofile
     setlocal nonumber
+    setlocal ft=markdown
 endfunction
 
 function! codex#AppendText(text) abort
@@ -65,7 +66,7 @@ function! codex#ExitCb(job, code, headers, body) abort
   let body_text = type(a:body) == v:t_list ? join(a:body, "\n") : a:body
   let body_json = json_decode(body_text)
   let text = body_json.output[1].content[0].text
-  call codex#AppendText(text)
+  call codex#AppendText(text . "\n")
 
   " stateful 用に id を保持（あれば更新）
   if has_key(body_json, 'id') && type(body_json.id) == v:t_string && !empty(body_json.id)
@@ -82,6 +83,8 @@ function! codex#Request(text) abort
   if type(s:prev_response_id) == v:t_string && !empty(s:prev_response_id)
     let payload.previous_response_id = s:prev_response_id
   endif
+
+  call codex#AppendText("## User\n" . a:text . "\n\n## Codex")
 
   call s:HTTP.request_async({
         \ "url": s:ENDPOINT_URL,
