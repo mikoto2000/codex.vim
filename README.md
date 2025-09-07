@@ -10,6 +10,16 @@ codex にリクエストを送る:
 :call codex#Request("こんにちは！！！！！")
 ```
 
+リクエスト入力専用バッファから送る:
+
+```vim
+" 入力専用バッファを開く（1度だけでOK）
+:call codex#OpenRequestBuffer()
+
+" バッファにリクエスト本文を複数行で入力してから送信
+:call codex#RequestFromBuffer()
+```
+
 コンテキストをリセットする:
 
 ```vim

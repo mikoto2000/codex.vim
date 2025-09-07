@@ -23,6 +23,20 @@ let s:MODEL = "gpt-5"
 
 let s:prev_response_id = ''
 
+" Request input専用バッファ名
+let s:REQUEST_BUFFER_NAME = '__CODEX_REQUEST__'
+
+function! codex#OpenRequestBuffer() abort
+  " リクエスト入力専用バッファを新規作成/表示
+  silent bo new __CODEX_REQUEST__
+
+  setlocal noshowcmd
+  setlocal noswapfile
+  setlocal buftype=nofile
+  setlocal nonumber
+  setlocal ft=markdown
+endfunction
+
 function! codex#OpenCodexBuffer() abort
     """ 呼び出し元のウィンドウ ID を記憶
     let s:caller_window_id = win_getid()
@@ -103,6 +117,32 @@ function! codex#Request(text) abort
         \ "data": json_encode(payload),
         \ "exit_cb": "codex#ExitCb"
         \})
+endfunction
+
+function! codex#RequestFromBuffer() abort
+  " 入力専用バッファの内容を結合して送信
+  let name = s:REQUEST_BUFFER_NAME
+  let buf  = bufnr(name)
+  if buf == -1
+    call codex#OpenRequestBuffer()
+    let buf = bufnr(name)
+  endif
+
+  if !bufloaded(buf)
+    call bufload(buf)
+  endif
+
+  let lines = getbufline(buf, 1, '$')
+  if len(lines) == 1 && lines[0] ==# ''
+    echo '[codex] Request buffer is empty'
+    return
+  endif
+
+  let text = join(lines, "\n")
+  call codex#Request(text)
+
+  " 入力専用バッファの内容をクリア
+  call deletebufline(buf, 1, '$')
 endfunction
 
 function! codex#ResetContext() abort
