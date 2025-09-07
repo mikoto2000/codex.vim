@@ -76,19 +76,14 @@ function! codex#AppendText(text) abort
 endfunction
 
 function! codex#ExitCb(job, code, headers, body) abort
+  echomsg a:body
   let body_text = type(a:body) == v:t_list ? join(a:body, "\n") : a:body
   let body_json = json_decode(body_text)
-  " output_text があればそれを優先的に使用し、なければ従来の取り出し方にフォールバックする
-  let text = ''
-  if has_key(body_json, 'output_text') && type(body_json.output_text) == v:t_string && !empty(body_json.output_text)
-    let text = body_json.output_text
-  else
-    try
-      let text = body_json.output[1].content[0].text
-    catch
-      let text = '[Error] レスポンスのパースに失敗しました'
-    endtry
-  endif
+
+  " レスポンスからテキストを抽出
+  let text = s:ExtractText(body_json)
+
+  " codex 用バッファに追記
   call codex#AppendText(text . "\n")
 
   " stateful 用に id を保持（あれば更新）
@@ -100,7 +95,8 @@ endfunction
 function! codex#Request(text) abort
   let payload = {
         \   "model": s:MODEL,
-        \   "input": a:text
+        \   "input": a:text,
+        \   "tools": [{'type': 'web_search'}]
         \ }
 
   if type(s:prev_response_id) == v:t_string && !empty(s:prev_response_id)
@@ -146,6 +142,39 @@ endfunction
 
 function! codex#ResetContext() abort
   let s:prev_response_id = ''
+endfunction
+
+" レスポンスJSONからアシスタントのテキストを安全に取り出す
+function! s:ExtractText(body_json) abort
+  " 0) 便利プロパティ（あれば最優先）
+  if has_key(a:body_json, 'output_text')
+        \ && type(a:body_json.output_text) == v:t_string
+        \ && !empty(a:body_json.output_text)
+    return a:body_json.output_text
+  endif
+
+  " 1) output を走査して、assistant の message に含まれる text を集める
+  if has_key(a:body_json, 'output') && type(a:body_json.output) == v:t_list
+    let acc = []
+    for item in a:body_json.output
+      " web_search_call などの中間ステップは無視
+      if get(item, 'type', '') ==# 'message'
+            \ && get(item, 'role', '') ==# 'assistant'
+            \ && has_key(item, 'content') && type(item.content) == v:t_list
+        for c in item.content
+          if has_key(c, 'text') && type(c.text) == v:t_string
+            call add(acc, c.text)
+          endif
+        endfor
+      endif
+    endfor
+    if !empty(acc)
+      return join(acc, "\n")
+    endif
+  endif
+
+  " 2) フォールバック：何も拾えなければ空文字
+  return ''
 endfunction
 
 let &cpo = s:save_cpo
