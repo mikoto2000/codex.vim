@@ -35,7 +35,7 @@ function! codex#OpenRequestBuffer() abort
 endfunction
 
 " Codex レスポンス専用バッファ名
-function! codex#OpenCodexBuffer() abort
+function! codex#OpenResponseBuffer() abort
     """ 呼び出し元のウィンドウ ID を記憶
     let s:caller_window_id = win_getid()
 
@@ -48,6 +48,9 @@ function! codex#OpenCodexBuffer() abort
     setlocal buftype=nofile
     setlocal nonumber
     setlocal ft=markdown
+
+    """ 呼び出し元ウィンドウをアクティブにする
+    call win_gotoid(s:caller_window_id)
 endfunction
 
 function! codex#AppendText(text) abort
@@ -58,7 +61,7 @@ function! codex#AppendText(text) abort
   let name = '__CODEX_RESPONSE_BUFFER__'
   let buf  = bufnr(name)
   if buf == -1
-    call codex#OpenCodexBuffer()
+    call codex#OpenResponseBuffer()
     let buf  = bufnr(name)
   endif
 
@@ -116,7 +119,7 @@ endfunction
 
 function! codex#RequestFromBuffer() abort
   " 入力専用バッファの内容を結合して送信
-  let name = s:REQUEST_BUFFER_NAME
+  let name = "__CODEX_REQUEST_BUFFER__"
   let buf  = bufnr(name)
   if buf == -1
     call codex#OpenRequestBuffer()
