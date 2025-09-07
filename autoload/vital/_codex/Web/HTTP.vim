@@ -492,7 +492,6 @@ function! s:curl_err_cb(user_cb_name, settings, job, code) abort
 endfunc
 
 function! s:curl_exit_cb(user_cb_name, settings, job, code) abort
-  echomsg "ExitCb kitayo!!!!!!!!!!!"
 
   let headerText = readfile(a:settings._file.header)
   let header = s:parseHeader(headerText)
