@@ -180,5 +180,16 @@ function! s:ExtractText(body_json) abort
   return ''
 endfunction
 
+function! codex#GetVisualText() abort
+  let [l1, c1] = getpos("'<")[1:2]
+  let [l2, c2] = getpos("'>")[1:2]
+  let lines = getline(l1, l2)
+  if empty(lines)
+    return ''
+  endif
+  let lines[0] = lines[0][c1 - 1 :]
+  let lines[-1] = lines[-1][: c2 - 1]
+  return join(lines, "\n")
+endfunction
 let &cpo = s:save_cpo
 unlet s:save_cpo

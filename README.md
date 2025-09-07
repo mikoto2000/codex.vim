@@ -32,7 +32,7 @@ codex にリクエストを送る:
 
 ```vim
 " リクエストを送るコマンド
-command! -nargs=+ CodexRequest call codex#Request(<q-args>)
+command! -range CodexRequest call codex#Request(codex#GetVisualText())
 command! CodexRequestFromBuffer call codex#RequestFromBuffer()
 command! CodexOpenRequestBuffer call codex#OpenRequestBuffer()
 command! CodexResetContext call codex#ResetContext()
