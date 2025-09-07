@@ -31,10 +31,16 @@ codex にリクエストを送る:
 ### コマンド例:
 
 ```vim
-" リクエストを送るコマンド
+" 選択範囲のテキストをリクエストとして送るコマンド
 command! -range CodexRequest call codex#Request(codex#GetVisualText())
-command! CodexRequestFromBuffer call codex#RequestFromBuffer()
+
+" リクエスト専用バッファを開くコマンド
 command! CodexOpenRequestBuffer call codex#OpenRequestBuffer()
+
+" リクエスト専用バッファの内容をリクエストとして送るコマンド
+command! CodexRequestFromBuffer call codex#RequestFromBuffer()
+
+" コンテキストをリセットするコマンド
 command! CodexResetContext call codex#ResetContext()
 ```
 
