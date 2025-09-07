@@ -65,7 +65,17 @@ endfunction
 function! codex#ExitCb(job, code, headers, body) abort
   let body_text = type(a:body) == v:t_list ? join(a:body, "\n") : a:body
   let body_json = json_decode(body_text)
-  let text = body_json.output[1].content[0].text
+  " output_text があればそれを優先的に使用し、なければ従来の取り出し方にフォールバックする
+  let text = ''
+  if has_key(body_json, 'output_text') && type(body_json.output_text) == v:t_string && !empty(body_json.output_text)
+    let text = body_json.output_text
+  else
+    try
+      let text = body_json.output[1].content[0].text
+    catch
+      let text = '[Error] レスポンスのパースに失敗しました'
+    endtry
+  endif
   call codex#AppendText(text . "\n")
 
   " stateful 用に id を保持（あれば更新）
