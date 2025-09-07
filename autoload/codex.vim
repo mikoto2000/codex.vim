@@ -23,12 +23,9 @@ let s:MODEL = "gpt-5"
 
 let s:prev_response_id = ''
 
-" Request input専用バッファ名
-let s:REQUEST_BUFFER_NAME = '__CODEX_REQUEST__'
-
 function! codex#OpenRequestBuffer() abort
   " リクエスト入力専用バッファを新規作成/表示
-  silent bo new __CODEX_REQUEST__
+  silent bo new __CODEX_REQUEST_BUFFER__
 
   setlocal noshowcmd
   setlocal noswapfile
@@ -37,12 +34,13 @@ function! codex#OpenRequestBuffer() abort
   setlocal ft=markdown
 endfunction
 
+" Codex レスポンス専用バッファ名
 function! codex#OpenCodexBuffer() abort
     """ 呼び出し元のウィンドウ ID を記憶
     let s:caller_window_id = win_getid()
 
     """ 新しいバッファを作成
-    silent bo new __CODEX_BUFFER__
+    silent bo new __CODEX_RESPONSE_BUFFER__
 
     """ バッファリスト用バッファの設定
     setlocal noshowcmd
@@ -57,7 +55,7 @@ function! codex#AppendText(text) abort
   let lines = type(a:text) == v:t_list ? a:text : split(a:text, "\n", 1)
 
   " codex 用バッファの特定（なければ作成）
-  let name = '__CODEX_BUFFER__'
+  let name = '__CODEX_RESPONSE_BUFFER__'
   let buf  = bufnr(name)
   if buf == -1
     call codex#OpenCodexBuffer()
