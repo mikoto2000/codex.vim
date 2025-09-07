@@ -74,6 +74,10 @@ function! codex#AppendText(text) abort
   else
     call appendbufline(buf, lc, lines)
   endif
+
+  " バッファ末尾まで移動
+  let wins = win_findbuf(buf)
+  call win_execute(wins[0], 'silent! keepjumps normal! Gzb', 'silent')
 endfunction
 
 function! codex#ExitCb(job, code, headers, body) abort
